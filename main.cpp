@@ -52,7 +52,7 @@ void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph)
             // Calculate positions of connected nodes based on nodePositions
             sf::Vector2f startPos = nodePositions.getDato(i);
             sf::Vector2f endPos = nodePositions.getDato(connectedNode->getId() - 1); // Assuming IDs start from 1
-            sf::Color lineColor = sf::Color::Red;
+            sf::Color lineColor = sf::Color(connectedNode->getId() * 10, connectedNode->getId() * 20, connectedNode->getId() * 30);
             // Create a line for the connection
             sf::Vertex line[] = {
                     sf::Vertex(sf::Vector2f(startPos.x, startPos.y), lineColor),
