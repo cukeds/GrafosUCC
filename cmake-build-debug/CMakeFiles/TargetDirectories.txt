@@ -1,0 +1,3 @@
+C:/Users/Juan/Downloads/Cookie and Morts shit/University/ProgAA/GrafosUCC/cmake-build-debug/CMakeFiles/grafos.dir
+C:/Users/Juan/Downloads/Cookie and Morts shit/University/ProgAA/GrafosUCC/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Juan/Downloads/Cookie and Morts shit/University/ProgAA/GrafosUCC/cmake-build-debug/CMakeFiles/rebuild_cache.dir

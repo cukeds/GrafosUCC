@@ -4,31 +4,33 @@
 
 #ifndef GRAFOS_NODOGRAFO_H
 #define GRAFOS_NODOGRAFO_H
+#include "Lista.h"
 #include <iostream>
 
 using namespace std;
 template<class T>
 class NodoGrafo{
 private:
-    int max_grado = 100;
-    NodoGrafo<T> **conexiones;
+    Lista<NodoGrafo<T>*> *conexiones;
     int grado;
     T dato;
+    int id;
 public:
     NodoGrafo(){
-        max_grado = 100;
-        conexiones = new NodoGrafo<T>*[max_grado];
+        conexiones = new Lista<NodoGrafo<T>*>;
         grado = 0;
         dato = T();
+        id = 0;
     }
-    explicit NodoGrafo(T dato){
-        max_grado = 100;
-        conexiones = new NodoGrafo<T>*[max_grado];
+    explicit NodoGrafo(int id, T dato){
+        conexiones = new Lista<NodoGrafo<T>*>;
         grado = 0;
         this->dato = dato;
+        this->id = id;
     }
     ~NodoGrafo() {
-        delete[] conexiones;
+        conexiones->vaciar();
+        delete conexiones;
     }
 
     void setDato(T dato){
@@ -40,16 +42,26 @@ public:
     }
 
     void addConexion(NodoGrafo<T> *nodo){
-        if(grado < max_grado){
-            conexiones[grado] = nodo;
-            grado++;
-        }else{
-            throw 400;
-        }
+        conexiones->insertarUltimo(nodo);
+        grado++;
+
+    }
+
+    int getId(){
+        return id;
     }
 
     NodoGrafo<T>* getConexion(int n){
-        return conexiones[n];
+        return conexiones->getDato(n);
+    }
+
+    bool isConnected(int _id){
+        for(int i = 0; i < grado; i++){
+            if(conexiones->getDato(i)->getId() == _id){
+                return true;
+            }
+        }
+        return false;
     }
 
     void print(){

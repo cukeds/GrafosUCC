@@ -4,11 +4,10 @@
 
 #ifndef GRAFOS_GRAFO_H
 #define GRAFOS_GRAFO_H
-#include "Lista.h"
 #include "NodoGrafo.h"
 template <class T>
 class Grafo {
-private:
+protected:
     int n=0;
 public:
     Lista<NodoGrafo<T>*> *nodos;
@@ -16,8 +15,13 @@ public:
     Grafo() {
         nodos = new Lista<NodoGrafo<T>*>;
     }
+
+    int getN(){
+        return n;
+    }
+
     void agregarNodo(T dato) {
-        NodoGrafo<T> *nuevoNodo = new NodoGrafo(dato);
+        NodoGrafo<T> *nuevoNodo = new NodoGrafo(n+1, dato);
         nodos->insertarUltimo(nuevoNodo);
         n++;
     }
@@ -30,7 +34,7 @@ public:
     void imprimirGrafo() {
         for (int i = 0; i < n; i++) {
             NodoGrafo<T>* nodo = nodos->getDato(i);
-            std::cout << "NodoGrafo con dato " << nodo->getDato() << " esta conectado a: ";
+            std::cout << "Nodo " << nodo->getId() << " Grado: "<<nodo->getGrado()<<" - "<< nodo->getDato() << " esta conectado a: ";
 
             if (nodo->getGrado() > 0) {
                 for (int i = 0; i < nodo->getGrado() - 1; i++) {
@@ -42,6 +46,21 @@ public:
             }
 
             std::cout << std::endl;
+        }
+    }
+
+    void matrizAdjacencia(){
+        for(int j = 0; j < n; j++){
+            NodoGrafo<T> *nodo = nodos->getDato(j);
+            for(int i = 1; i <= n; i++){
+                if(nodo->isConnected(i)){
+                    cout<<"1 ";
+                }
+                else{
+                    cout<<"0 ";
+                }
+            }
+            cout<<'\n';
         }
     }
 
