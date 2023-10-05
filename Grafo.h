@@ -21,7 +21,7 @@ public:
     }
 
     void agregarNodo(T dato) {
-        NodoGrafo<T> *nuevoNodo = new NodoGrafo(n+1, dato);
+        NodoGrafo<T> *nuevoNodo = new NodoGrafo<T>(n+1, dato);
         nodos->insertarUltimo(nuevoNodo);
         n++;
     }
