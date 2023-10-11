@@ -1,82 +1,67 @@
-//
-// Created by alumno on 28/9/2023.
-//
-
 #ifndef GRAFOS_NODOGRAFO_H
 #define GRAFOS_NODOGRAFO_H
-#include "Lista.h"
-#include <iostream>
 
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <memory>
+
 template<class T>
-class NodoGrafo{
+class NodoGrafo {
 private:
-    Lista<NodoGrafo<T>*> *conexiones;
+    std::vector<std::shared_ptr<NodoGrafo<T>>> conexiones;
     int grado;
     T dato;
     int id;
+
 public:
-    NodoGrafo(){
-        conexiones = new Lista<NodoGrafo<T>*>;
-        grado = 0;
-        dato = T();
-        id = 0;
-    }
-    explicit NodoGrafo(int id, T dato){
-        conexiones = new Lista<NodoGrafo<T>*>;
-        grado = 0;
-        this->dato = dato;
-        this->id = id;
-    }
-    ~NodoGrafo() {
-        conexiones->vaciar();
-        delete conexiones;
-    }
+    NodoGrafo() : grado(0), dato(T()), id(0) {}
 
-    void setDato(T dato){
+    explicit NodoGrafo(int id, T dato) : grado(0), dato(dato), id(id) {}
+
+    void setDato(T dato) {
         this->dato = dato;
     }
 
-    T getDato(){
+    T getDato() const {
         return dato;
     }
 
-    void addConexion(NodoGrafo<T> *nodo){
-        conexiones->insertarUltimo(nodo);
+    void addConexion(std::shared_ptr<NodoGrafo<T>> nodo) {
+        conexiones.push_back(nodo);
         grado++;
-
     }
 
-    int getId(){
+    int getId() const {
         return id;
     }
 
-    NodoGrafo<T>* getConexion(int n){
-        return conexiones->getDato(n);
+    std::shared_ptr<NodoGrafo<T>> getConexion(int n) const {
+        if (n >= 0 && n < grado) {
+            return conexiones[n];
+        }
+        return nullptr;
     }
 
-    bool isConnected(int _id){
-        for(int i = 0; i < grado; i++){
-            if(conexiones->getDato(i)->getId() == _id){
+    bool isConnected(int _id) const {
+        for (const auto& conexion : conexiones) {
+            if (conexion->getId() == _id) {
                 return true;
             }
         }
         return false;
     }
 
-    void print(){
-        std::cout<<dato<<" {";
-        for(int i = 0; i < grado; i++){
-            std::cout<< "{"<<dato<<","<<(conexiones[i])->getDato()<<"}";
+    void print() const {
+        std::cout << dato << " {";
+        for (int i = 0; i < grado; i++) {
+            std::cout << "{" << dato << "," << conexiones[i]->getDato() << "}";
         }
-        std::cout<<"}"<<endl;
-
+        std::cout << "}" << std::endl;
     }
 
-    int getGrado(){
+    int getGrado() const {
         return grado;
     }
 };
-
 
 #endif //GRAFOS_NODOGRAFO_H

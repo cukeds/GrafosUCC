@@ -111,7 +111,7 @@ public:
                 if(ToAdd.wall){
                     continue;
                 }
-                ultimo = nodos->getDato(n-1);
+                ultimo = nodos[n-1];
                 for(int i = 0; i < n-1; i++){
                     nodo = nodos->getDato(i);
                     Celda = nodo->getDato();

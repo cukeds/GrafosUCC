@@ -1,8 +1,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Grafo.h"
-#include "GrafoLaberinto.h"
+// #include "GrafoLaberinto.h"
 #include <cmath>
+#include "Lista.h"
 using namespace std;
 
 Lista<sf::Vector2f> nodePositions;
@@ -24,8 +25,9 @@ void setupNodePositions(int n) {
 // Function to render your graph using SFML
 void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph) {
     // Render your graph here using SFML drawing functions
+    auto nodos = myGraph.getNodos();
     for (size_t i = 0; i < myGraph.getN(); i++) {
-        NodoGrafo<string>* nodo = myGraph.nodos->getDato(i);
+        std::shared_ptr<NodoGrafo<string>> nodo = nodos[i];
 
         // Create a circle for the node
         sf::CircleShape nodeShape(20.0f);
@@ -47,12 +49,12 @@ void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph)
         window.draw(label);
         // Draw connections (edges)
         for (int j = 0; j < nodo->getGrado(); j++) {
-            NodoGrafo<string>* connectedNode = nodo->getConexion(j);
+            std::shared_ptr<NodoGrafo<string>> connectedNode = nodo->getConexion(j);
 
             // Calculate positions of connected nodes based on nodePositions
             sf::Vector2f startPos = nodePositions.getDato(i);
             sf::Vector2f endPos = nodePositions.getDato(connectedNode->getId() - 1); // Assuming IDs start from 1
-            sf::Color lineColor = sf::Color(connectedNode->getId() * 10, connectedNode->getId() * 20, connectedNode->getId() * 30);
+            sf::Color lineColor = sf::Color(0, 0, 0);
             // Create a line for the connection
             sf::Vertex line[] = {
                     sf::Vertex(sf::Vector2f(startPos.x, startPos.y), lineColor),
@@ -66,23 +68,24 @@ void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph)
 }
 
 int main() {
+
     Grafo<string> grafo;
     grafo.agregarNodo("Luana Rolon");
     grafo.agregarNodo("Selena Saad");
     grafo.agregarNodo("Agustin Gallardo");
-    grafo.agregarArista(grafo.nodos->getDato(0), grafo.nodos->getDato(1));
-    grafo.agregarArista(grafo.nodos->getDato(1), grafo.nodos->getDato(2));
-    grafo.agregarArista(grafo.nodos->getDato(0), grafo.nodos->getDato(2));
+    grafo.agregarArista(0, 1);
+    grafo.agregarArista(1,2);
+    grafo.agregarArista(0,2);
     grafo.agregarNodo("Tobias Nicolas");
     grafo.agregarNodo("Nicolas Rojas");
     grafo.agregarNodo("Mateo Velasquez");
     grafo.agregarNodo("Agustina Perez");
-    grafo.agregarArista(grafo.nodos->getDato(3), grafo.nodos->getDato(4));
-    grafo.agregarArista(grafo.nodos->getDato(3), grafo.nodos->getDato(5));
-    grafo.agregarArista(grafo.nodos->getDato(3), grafo.nodos->getDato(6));
-    grafo.agregarArista(grafo.nodos->getDato(4), grafo.nodos->getDato(5));
-    grafo.agregarArista(grafo.nodos->getDato(4), grafo.nodos->getDato(6));
-    grafo.agregarArista(grafo.nodos->getDato(5), grafo.nodos->getDato(6));
+    grafo.agregarArista(3,4);
+    grafo.agregarArista(3,5);
+    grafo.agregarArista(3,6);
+    grafo.agregarArista(4,5);
+    grafo.agregarArista(4,6);
+    grafo.agregarArista(5,6);
 
     grafo.agregarNodo("Delfina Salinas");
     grafo.agregarNodo("Virginia Rodriguez");
@@ -99,97 +102,95 @@ int main() {
     grafo.agregarNodo("Dante Ojeda");
     grafo.agregarNodo("Joaquin Lista");
 
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(8));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(9));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(10));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(11));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(12));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(13));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(7), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(9));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(10));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(11));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(12));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(13));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(8), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(10));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(11));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(12));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(13));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(9), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(11));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(12));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(13));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(10), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(12));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(13));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(11), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(13));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(12), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(14));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(13), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(14), grafo.nodos->getDato(15));
-    grafo.agregarArista(grafo.nodos->getDato(14), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(14), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(14), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(14), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(14), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(15), grafo.nodos->getDato(16));
-    grafo.agregarArista(grafo.nodos->getDato(15), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(15), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(15), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(15), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(16), grafo.nodos->getDato(17));
-    grafo.agregarArista(grafo.nodos->getDato(16), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(16), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(16), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(17), grafo.nodos->getDato(18));
-    grafo.agregarArista(grafo.nodos->getDato(17), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(17), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(18), grafo.nodos->getDato(19));
-    grafo.agregarArista(grafo.nodos->getDato(18), grafo.nodos->getDato(20));
-    grafo.agregarArista(grafo.nodos->getDato(19), grafo.nodos->getDato(20));
+    grafo.agregarArista(7, 8);
+    grafo.agregarArista(7, 9);
+    grafo.agregarArista(7, 10);
+    grafo.agregarArista(7, 11);
+    grafo.agregarArista(7, 12);
+    grafo.agregarArista(7, 13);
+    grafo.agregarArista(7, 14);
+    grafo.agregarArista(7, 15);
+    grafo.agregarArista(7, 16);
+    grafo.agregarArista(7, 17);
+    grafo.agregarArista(7, 18);
+    grafo.agregarArista(7, 19);
+    grafo.agregarArista(8, 9);
+    grafo.agregarArista(8, 10);
+    grafo.agregarArista(8, 11);
+    grafo.agregarArista(8, 12);
+    grafo.agregarArista(8, 13);
+    grafo.agregarArista(8, 14);
+    grafo.agregarArista(8, 15);
+    grafo.agregarArista(8, 16);
+    grafo.agregarArista(8, 17);
+    grafo.agregarArista(8, 18);
+    grafo.agregarArista(8, 19);
+    grafo.agregarArista(8, 20);
+    grafo.agregarArista(9, 10);
+    grafo.agregarArista(9, 11);
+    grafo.agregarArista(9, 12);
+    grafo.agregarArista(9, 13);
+    grafo.agregarArista(9, 14);
+    grafo.agregarArista(9, 15);
+    grafo.agregarArista(9, 16);
+    grafo.agregarArista(9, 17);
+    grafo.agregarArista(9, 18);
+    grafo.agregarArista(9, 19);
+    grafo.agregarArista(9, 20);
+    grafo.agregarArista(10, 11);
+    grafo.agregarArista(10, 12);
+    grafo.agregarArista(10, 13);
+    grafo.agregarArista(10, 14);
+    grafo.agregarArista(10, 15);
+    grafo.agregarArista(10, 16);
+    grafo.agregarArista(10, 17);
+    grafo.agregarArista(10, 18);
+    grafo.agregarArista(10, 19);
+    grafo.agregarArista(10, 20);
+    grafo.agregarArista(11, 12);
+    grafo.agregarArista(11, 13);
+    grafo.agregarArista(11, 14);
+    grafo.agregarArista(11, 15);
+    grafo.agregarArista(11, 16);
+    grafo.agregarArista(11, 17);
+    grafo.agregarArista(11, 18);
+    grafo.agregarArista(11, 19);
+    grafo.agregarArista(11, 20);
+    grafo.agregarArista(12, 13);
+    grafo.agregarArista(12, 14);
+    grafo.agregarArista(12, 15);
+    grafo.agregarArista(12, 16);
+    grafo.agregarArista(12, 17);
+    grafo.agregarArista(12, 18);
+    grafo.agregarArista(12, 19);
+    grafo.agregarArista(12, 20);
+    grafo.agregarArista(13, 15);
+    grafo.agregarArista(13, 16);
+    grafo.agregarArista(13, 17);
+    grafo.agregarArista(13, 18);
+    grafo.agregarArista(13, 19);
+    grafo.agregarArista(13, 20);
+    grafo.agregarArista(14, 15);
+    grafo.agregarArista(14, 16);
+    grafo.agregarArista(14, 17);
+    grafo.agregarArista(14, 18);
+    grafo.agregarArista(14, 19);
+    grafo.agregarArista(14, 20);
+    grafo.agregarArista(15, 16);
+    grafo.agregarArista(15, 17);
+    grafo.agregarArista(15, 18);
+    grafo.agregarArista(15, 19);
+    grafo.agregarArista(15, 20);
+    grafo.agregarArista(16, 17);
+    grafo.agregarArista(16, 18);
+    grafo.agregarArista(16, 19);
+    grafo.agregarArista(16, 20);
+    grafo.agregarArista(17, 18);
+    grafo.agregarArista(17, 19);
+    grafo.agregarArista(17, 20);
+    grafo.agregarArista(18, 19);
+    grafo.agregarArista(18, 20);
+    grafo.agregarArista(19, 20);
 
 
     grafo.agregarNodo("Martina Becerra");
@@ -201,13 +202,13 @@ int main() {
     grafo.agregarNodo("Marcos Don");
     grafo.agregarNodo("Matias Carbel");
 
-    grafo.agregarArista(grafo.nodos->getDato(23), grafo.nodos->getDato(2));
-    grafo.agregarArista(grafo.nodos->getDato(24), grafo.nodos->getDato(25));
-    grafo.agregarArista(grafo.nodos->getDato(24), grafo.nodos->getDato(26));
-    grafo.agregarArista(grafo.nodos->getDato(24), grafo.nodos->getDato(27));
-    grafo.agregarArista(grafo.nodos->getDato(25), grafo.nodos->getDato(26));
-    grafo.agregarArista(grafo.nodos->getDato(25), grafo.nodos->getDato(27));
-    grafo.agregarArista(grafo.nodos->getDato(26), grafo.nodos->getDato(27));
+    grafo.agregarArista(23, 2);
+    grafo.agregarArista(24, 25);
+    grafo.agregarArista(24, 26);
+    grafo.agregarArista(24, 27);
+    grafo.agregarArista(25, 26);
+    grafo.agregarArista(25, 27);
+    grafo.agregarArista(26, 27);
 
 
     grafo.imprimirGrafo();
@@ -253,5 +254,4 @@ int main() {
 
     return EXIT_SUCCESS;
 
-    return 0;
 }
