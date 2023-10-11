@@ -4,6 +4,11 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <cstdint>
+
+struct Color{
+    int8_t r, g, b;
+};
 
 template<class T>
 class NodoGrafo {
@@ -12,14 +17,43 @@ private:
     int grado;
     T dato;
     int id;
-
+    Color color;
+    std::string label;
 public:
-    NodoGrafo() : grado(0), dato(T()), id(0) {}
+    const std::string &getLabel() const {
+        return label;
+    }
 
-    explicit NodoGrafo(int id, T dato) : grado(0), dato(dato), id(id) {}
+    void setLabel(const std::string &label) {
+        NodoGrafo::label = label;
+    }
+
+    NodoGrafo() : grado(0), dato(T()), id(0) {
+        color.r = 0;
+        color.g = 0;
+        color.b = 255;
+        label = std::to_string(id);
+    }
+
+    explicit NodoGrafo(int id, T dato) : grado(0), dato(dato), id(id) {
+        color.r = 0;
+        color.g = 0;
+        color.b = 255;
+        label = std::to_string(id);
+    }
 
     void setDato(T dato) {
         this->dato = dato;
+    }
+
+    void setColor(int r, int g, int b){
+        color.r = r;
+        color.g = g;
+        color.b = b;
+    }
+
+    Color getColor(){
+        return color;
     }
 
     T getDato() const {

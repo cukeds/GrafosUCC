@@ -1,6 +1,8 @@
 #ifndef GRAFOS_H
 #define GRAFOS_H
 
+#include "Cola.h"
+#include "Pila.h"
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -93,6 +95,94 @@ public:
     std::shared_ptr<NodoGrafo<T>> getNodo(int pos){
         return nodos[pos];
     }
+
+    std::vector<int> shortestPath(int id1, int id2){
+        Cola<int> frontier;
+
+        std::vector<int> shortestPath;
+
+        if (id1 < 0 || id1 >= n || id2 < 0 || id2 >= n) {
+            std::cerr << "Invalid node indices." << std::endl;
+            return shortestPath;
+        }
+
+        std::vector<int> distance(n, -1);
+        std::vector<int> parent(n, -1);
+
+        distance[id1] = 0;
+        frontier.encolar(id1);
+
+        while (!frontier.esVacia()) {
+            int currentNode = frontier.desencolar();
+
+            if (currentNode == id2) {
+                // Reconstruct the shortest path
+                int node = currentNode;
+                while (node != -1) {
+                    shortestPath.push_back(node);
+                    node = parent[node];
+                }
+                std::reverse(shortestPath.begin(), shortestPath.end());
+                return shortestPath;
+            }
+
+            for (int neighbor = 0; neighbor < n; neighbor++) {
+                if (adjacencyMatrix[currentNode][neighbor] && distance[neighbor] == -1) {
+                    distance[neighbor] = distance[currentNode] + 1;
+                    parent[neighbor] = currentNode;
+                    frontier.encolar(neighbor);
+                }
+            }
+        }
+
+        return shortestPath; // Empty path; no connection found
+    }
+
+    std::vector<int> dfsPath(int id1, int id2){
+        Pila<int> frontier;
+
+        std::vector<int> path;
+
+        if (id1 < 0 || id1 >= n || id2 < 0 || id2 >= n) {
+            std::cerr << "Invalid node indices." << std::endl;
+            return path;
+        }
+
+        std::vector<int> distance(n, -1);
+        std::vector<int> parent(n, -1);
+
+        distance[id1] = 0;
+        frontier.push(id1);
+
+        while (!frontier.esVacia()) {
+            int currentNode = frontier.pop();
+
+            if (currentNode == id2) {
+                // Reconstruct the shortest path
+                int node = currentNode;
+                while (node != -1) {
+                    path.push_back(node);
+                    node = parent[node];
+                }
+                std::reverse(path.begin(), path.end());
+                return path;
+            }
+
+            for (int neighbor = 0; neighbor < n; neighbor++) {
+                if (adjacencyMatrix[currentNode][neighbor] && distance[neighbor] == -1) {
+                    distance[neighbor] = distance[currentNode] + 1;
+                    parent[neighbor] = currentNode;
+                    frontier.push(neighbor);
+                }
+            }
+        }
+
+        return path; // Empty path; no connection found
+    }
+
+
+
+
 };
 
 #endif

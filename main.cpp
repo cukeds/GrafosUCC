@@ -23,15 +23,17 @@ void setupNodePositions(int n) {
 
 
 // Function to render your graph using SFML
-void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph) {
+template<class T>
+void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<T> myGraph) {
     // Render your graph here using SFML drawing functions
     auto nodos = myGraph.getNodos();
     for (size_t i = 0; i < myGraph.getN(); i++) {
-        std::shared_ptr<NodoGrafo<string>> nodo = nodos[i];
+        std::shared_ptr<NodoGrafo<T>> nodo = nodos[i];
 
         // Create a circle for the node
         sf::CircleShape nodeShape(20.0f);
-        nodeShape.setFillColor(sf::Color::Blue);
+        Color color = nodo->getColor();
+        nodeShape.setFillColor(sf::Color(color.r, color.g, color.b));
         nodeShape.setPosition(nodePositions.getDato(i).x - 20.0f, nodePositions.getDato(i).y - 20.0f); // Adjust for circle radius
         // Draw the node
         window.draw(nodeShape);
@@ -40,7 +42,20 @@ void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph)
         label.setFont(font); // Use the loaded font
         label.setCharacterSize(20);
         label.setFillColor(sf::Color::Black);
-        label.setString(nodo->getDato()); // Use node index as label (add 1 to start from 1)
+        label.setString(to_string(nodo->getId())); // Use node index as label (add 1 to start from 1)
+
+        if(nodo->getLabel() != to_string(nodo->getId())){
+            sf::Text label;
+            label.setFont(font); // Use the loaded font
+            label.setCharacterSize(20);
+            label.setFillColor(sf::Color::Black);
+            label.setString(nodo->getLabel()); // Use node index as label (add 1 to start from 1)
+            sf::FloatRect labelBounds = label.getLocalBounds();
+            label.setOrigin(labelBounds.width / 2.0f, labelBounds.height * 2.0f); // Center the origin
+            label.setPosition(nodePositions.getDato(i));
+            window.draw(label);
+
+        }
 
         // Position the label at the center of the node
         sf::FloatRect labelBounds = label.getLocalBounds();
@@ -49,7 +64,7 @@ void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph)
         window.draw(label);
         // Draw connections (edges)
         for (int j = 0; j < nodo->getGrado(); j++) {
-            std::shared_ptr<NodoGrafo<string>> connectedNode = nodo->getConexion(j);
+            std::shared_ptr<NodoGrafo<T>> connectedNode = nodo->getConexion(j);
 
             // Calculate positions of connected nodes based on nodePositions
             sf::Vector2f startPos = nodePositions.getDato(i);
@@ -67,154 +82,45 @@ void renderGraph(sf::RenderWindow& window, sf::Font font, Grafo<string> myGraph)
     }
 }
 
+
+
 int main() {
 
-    Grafo<string> grafo;
-    grafo.agregarNodo("Luana Rolon");
-    grafo.agregarNodo("Selena Saad");
-    grafo.agregarNodo("Agustin Gallardo");
+    Grafo<int> grafo;
+    for(int i = 0; i < 10; i++){
+        grafo.agregarNodo(i+1);
+    }
     grafo.agregarArista(0, 1);
-    grafo.agregarArista(1,2);
-    grafo.agregarArista(0,2);
-    grafo.agregarNodo("Tobias Nicolas");
-    grafo.agregarNodo("Nicolas Rojas");
-    grafo.agregarNodo("Mateo Velasquez");
-    grafo.agregarNodo("Agustina Perez");
-    grafo.agregarArista(3,4);
-    grafo.agregarArista(3,5);
-    grafo.agregarArista(3,6);
-    grafo.agregarArista(4,5);
-    grafo.agregarArista(4,6);
-    grafo.agregarArista(5,6);
-
-    grafo.agregarNodo("Delfina Salinas");
-    grafo.agregarNodo("Virginia Rodriguez");
-    grafo.agregarNodo("Constanza Strumia");
-    grafo.agregarNodo("Belen Triachi");
-    grafo.agregarNodo("Ignacio Altamirano");
-    grafo.agregarNodo("Margarita De Marcos");
-    grafo.agregarNodo("Bautista Juncos");
-    grafo.agregarNodo("Paulina Ortiz");
-    grafo.agregarNodo("Valentina Rivarola");
-    grafo.agregarNodo("Sofia Oliveto");
-    grafo.agregarNodo("Marcos Bugliotti");
-    grafo.agregarNodo("Arnon Nahamias");
-    grafo.agregarNodo("Dante Ojeda");
-    grafo.agregarNodo("Joaquin Lista");
-
-    grafo.agregarArista(7, 8);
-    grafo.agregarArista(7, 9);
-    grafo.agregarArista(7, 10);
-    grafo.agregarArista(7, 11);
-    grafo.agregarArista(7, 12);
-    grafo.agregarArista(7, 13);
-    grafo.agregarArista(7, 14);
-    grafo.agregarArista(7, 15);
-    grafo.agregarArista(7, 16);
-    grafo.agregarArista(7, 17);
-    grafo.agregarArista(7, 18);
-    grafo.agregarArista(7, 19);
+    grafo.agregarArista(1, 2);
+    grafo.agregarArista(0, 2);
+    grafo.agregarArista(2, 3);
+    grafo.agregarArista(3, 4);
+    grafo.agregarArista(1, 5);
+    grafo.agregarArista(5, 6);
+    grafo.agregarArista(6, 4);
+    grafo.agregarArista(4, 7);
+    grafo.agregarArista(5, 8);
     grafo.agregarArista(8, 9);
-    grafo.agregarArista(8, 10);
-    grafo.agregarArista(8, 11);
-    grafo.agregarArista(8, 12);
-    grafo.agregarArista(8, 13);
-    grafo.agregarArista(8, 14);
-    grafo.agregarArista(8, 15);
-    grafo.agregarArista(8, 16);
-    grafo.agregarArista(8, 17);
-    grafo.agregarArista(8, 18);
-    grafo.agregarArista(8, 19);
-    grafo.agregarArista(8, 20);
-    grafo.agregarArista(9, 10);
-    grafo.agregarArista(9, 11);
-    grafo.agregarArista(9, 12);
-    grafo.agregarArista(9, 13);
-    grafo.agregarArista(9, 14);
-    grafo.agregarArista(9, 15);
-    grafo.agregarArista(9, 16);
-    grafo.agregarArista(9, 17);
-    grafo.agregarArista(9, 18);
-    grafo.agregarArista(9, 19);
-    grafo.agregarArista(9, 20);
-    grafo.agregarArista(10, 11);
-    grafo.agregarArista(10, 12);
-    grafo.agregarArista(10, 13);
-    grafo.agregarArista(10, 14);
-    grafo.agregarArista(10, 15);
-    grafo.agregarArista(10, 16);
-    grafo.agregarArista(10, 17);
-    grafo.agregarArista(10, 18);
-    grafo.agregarArista(10, 19);
-    grafo.agregarArista(10, 20);
-    grafo.agregarArista(11, 12);
-    grafo.agregarArista(11, 13);
-    grafo.agregarArista(11, 14);
-    grafo.agregarArista(11, 15);
-    grafo.agregarArista(11, 16);
-    grafo.agregarArista(11, 17);
-    grafo.agregarArista(11, 18);
-    grafo.agregarArista(11, 19);
-    grafo.agregarArista(11, 20);
-    grafo.agregarArista(12, 13);
-    grafo.agregarArista(12, 14);
-    grafo.agregarArista(12, 15);
-    grafo.agregarArista(12, 16);
-    grafo.agregarArista(12, 17);
-    grafo.agregarArista(12, 18);
-    grafo.agregarArista(12, 19);
-    grafo.agregarArista(12, 20);
-    grafo.agregarArista(13, 15);
-    grafo.agregarArista(13, 16);
-    grafo.agregarArista(13, 17);
-    grafo.agregarArista(13, 18);
-    grafo.agregarArista(13, 19);
-    grafo.agregarArista(13, 20);
-    grafo.agregarArista(14, 15);
-    grafo.agregarArista(14, 16);
-    grafo.agregarArista(14, 17);
-    grafo.agregarArista(14, 18);
-    grafo.agregarArista(14, 19);
-    grafo.agregarArista(14, 20);
-    grafo.agregarArista(15, 16);
-    grafo.agregarArista(15, 17);
-    grafo.agregarArista(15, 18);
-    grafo.agregarArista(15, 19);
-    grafo.agregarArista(15, 20);
-    grafo.agregarArista(16, 17);
-    grafo.agregarArista(16, 18);
-    grafo.agregarArista(16, 19);
-    grafo.agregarArista(16, 20);
-    grafo.agregarArista(17, 18);
-    grafo.agregarArista(17, 19);
-    grafo.agregarArista(17, 20);
-    grafo.agregarArista(18, 19);
-    grafo.agregarArista(18, 20);
-    grafo.agregarArista(19, 20);
-
-
-    grafo.agregarNodo("Martina Becerra");
-    grafo.agregarNodo("Pablo Venica");
-    grafo.agregarNodo("Victoria Sponton");
-    grafo.agregarNodo("Manuel Ferreras");
-    grafo.agregarNodo("Franco Casavecchia");
-    grafo.agregarNodo("Agustin Ditomasso");
-    grafo.agregarNodo("Marcos Don");
-    grafo.agregarNodo("Matias Carbel");
-
-    grafo.agregarArista(23, 2);
-    grafo.agregarArista(24, 25);
-    grafo.agregarArista(24, 26);
-    grafo.agregarArista(24, 27);
-    grafo.agregarArista(25, 26);
-    grafo.agregarArista(25, 27);
-    grafo.agregarArista(26, 27);
-
 
     grafo.imprimirGrafo();
     cout<<"--------------------\n";
     cout<<"Matriz de adjacencia: \n";
     grafo.matrizAdjacencia();
+
+
+    std::vector<int> path = grafo.shortestPath(0, 6);
+    int size = path.size();
+    if(size > 0){
+        grafo.getNodo(path[0])->setLabel("START");
+        for(int i = 0; i < size; i++){
+            cout<<path[i]<<" ";
+            grafo.getNodo(path[i])->setColor(75, (int8_t) (255 / path.size()  * (i + 1)), 50);
+            i > 0 ? grafo.getNodo(path[i])->setLabel("step " + to_string(i)) : void(0);
+        }
+        grafo.getNodo(path[size-1])->setLabel("END");
+    }
+
+
 //
 //    GrafoLaberinto gl;
 //    gl.leerLaberinto("../laberintos/gpt_mazes2.txt");
@@ -244,6 +150,16 @@ int main() {
 
         // Inside the main loop
         renderGraph(window, font, grafo);
+
+        if(size > 0){
+            sf::Text label;
+            label.setFont(font); // Use the loaded font
+            label.setCharacterSize(32);
+            label.setFillColor(sf::Color::Black);
+            label.setString("Path Length: " + to_string(path.size())); // Use node index as label (add 1 to start from 1)
+            label.setPosition(20, 15);
+            window.draw(label);
+        }
 
         // Render your graph here using SFML drawing functions
 
